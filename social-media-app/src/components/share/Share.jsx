@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export default function Share() {
     const { user } = useContext(AuthContext);
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    ;
     const desc = useRef();
 
     const [file, setFile] = useState(null);
@@ -47,7 +47,7 @@ export default function Share() {
         <div className="share">
             <div className="shareWrapper">
                 <div className="shareTop">
-                    <img className="shareProfileImg" src={user.profilePicture ? PF + user.profilePicture : PF + "person/noAvatar.png"} alt="" />
+                    <img className="shareProfileImg" src={user.profilePicture ? window.location.origin + user.profilePicture : window.location.origin + "images/person/noAvatar.png"} alt="" />
                     <input placeholder={"What's in your mind " + user.username + " ?"} className="shareInput" ref={desc} />
                 </div>
                 < hr className="shareHr" />

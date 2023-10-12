@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import './conversation.css';
 
 export default function Conversation({ conversation, currentUser }) {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    ;
     const [user, setUser] = useState("");
 
     useEffect(() => {
@@ -21,7 +21,7 @@ export default function Conversation({ conversation, currentUser }) {
 
     return (
         <div className="conversation">
-            <img src={user?.profilePicture ? PF + user.profilePicture : PF + "/person/noAvatar.png"} alt="" className="conversationImg" />
+            <img src={user?.profilePicture ? window.location.origin + user.profilePicture : window.location.origin + "/images/person/noAvatar.png"} alt="" className="conversationImg" />
             <span className="conversationName">{user.username}</span>
         </div>
     )

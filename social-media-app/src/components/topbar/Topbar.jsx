@@ -9,14 +9,14 @@ import { AuthContext } from '../../context/AuthContext';
 
 export default function Topbar() {
 
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    ;
     const { user } = useContext(AuthContext);
 
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
                 <Link to="/" style={{ textDecoration: "none" }}>
-                    <span className="logo">Social App</span>
+                    <span className="logo">UniCompanion</span>
                 </Link>
             </div>
             <div className="topbarCenter">
@@ -47,9 +47,9 @@ export default function Topbar() {
                     </div>
                     <Link to={`/profile/${user.username}`}>
                         <img src={
-                            user.profilePicture
-                                ? PF + user.profilePicture
-                                : PF + "person/noAvatar.png"
+                            user.profilePicture !==" "
+                                ? window.location.origin + user.profilePicture
+                                : window.location.origin + "/images/person/noAvatar.png"
                         } alt="profile" className="topbarImg" />
                     </Link>
                 </div>

@@ -19,6 +19,8 @@ export default function Messenger() {
     const { user } = useContext(AuthContext);
     const scrollRef = useRef();
 
+    console.log("Message user :: ", user)
+
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
         socket.current.on("getMessage", data => {
@@ -38,11 +40,23 @@ export default function Messenger() {
     useEffect(() => {
         socket.current.emit("addUser", user._id);
         socket.current.on("getUsers", users => {
+            console.log("Users array : " , users)
+            const live = [];
+            let i = 0 ;
+            while(i < users.length){
+                if (user._id !== users[i].userId){
+                    live.push(users);
+                }
+                i++ ; 
+            }
             setOnlineUsers(
-                user.followings.filter((f) => users.some((u) => u.userId === f))
+                // user.followings.filter((f) => users.some((u) => u.userId === f)) 
+                live
             );
+
         });
     }, [user]);
+    console.log("Online Users : " , onlineUsers)
 
     useEffect(() => {
         const getConversations = async () => {

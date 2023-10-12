@@ -2,9 +2,9 @@ const router = require("express").Router();
 const Conversation = require('../models/Conversation');
 
 //New Conversation
-router.post("/", async (req, res) => {
+router.post("/:senderId/:receiverId", async (req, res) => {
     const newConversation = new Conversation({
-        members: [req.body.senderId, req.body.receiverId],
+        members: [req.params.senderId, req.params.receiverId],
     });
     try {
         const savedConversation = await newConversation.save();
@@ -28,7 +28,6 @@ router.get("/:userId", async (req, res) => {
 });
 
 // get conv includes two userId
-
 router.get("/find/:firstUserId/:secondUserId", async (req, res) => {
     try {
         const conversation = await Conversation.findOne({

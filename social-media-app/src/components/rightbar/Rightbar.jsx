@@ -9,7 +9,7 @@ import Add from '@mui/icons-material/Add';
 import Remove from '@mui/icons-material/Remove';
 
 export default function Rightbar({ user }) {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    ;
     const [friends, setFriends] = useState([]);
     const { user: currentUser, dispatch } = useContext(AuthContext);
     const [followed, setFollowed] = useState(
@@ -103,8 +103,8 @@ export default function Rightbar({ user }) {
                                 <img
                                     src={
                                         friend.profilePicture
-                                            ? PF + friend.profilePicture
-                                            : PF + "person/noAvatar.png"
+                                            ? window.location.origin + friend.profilePicture
+                                            : window.location.origin + "/images/person/noAvatar.png"
                                     }
                                     alt=""
                                     className="rightbarFollowingImg"
