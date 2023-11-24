@@ -1,1 +1,1 @@
-# mern-social-media-app
+UniCompanion : Multilingual Chat Application. 
