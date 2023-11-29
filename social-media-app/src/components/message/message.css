@@ -1,3 +1,7 @@
+.message .message.own{
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
 .message {
   display: flex;
   flex-direction: column;

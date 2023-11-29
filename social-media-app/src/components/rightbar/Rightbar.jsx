@@ -15,6 +15,7 @@ export default function Rightbar({ user }) {
     const [followed, setFollowed] = useState(
         currentUser.followings.includes(user?._id)
     );
+
     useEffect(() => {
         const getFriends = async () => {
             try {
@@ -68,6 +69,27 @@ export default function Rightbar({ user }) {
         )
     }
 
+    const changeLang = async (langValue) => {
+        // Change local storage 
+       let tempUser =  JSON.parse(localStorage.getItem("user"))
+       tempUser.lang = langValue 
+       localStorage.setItem("user" , JSON.stringify(tempUser) )
+
+        // Change DB 
+        let _id = user._id 
+        try {
+            const response =  await axios.patch('/users/changeLang', {
+                _id : _id  , 
+                lang : langValue
+              })
+              console.log("Changed the Language value in the db :: " , response);
+          } catch (error) {
+            console.log("Error in Updating the Language value in DB :: ", error);
+          }
+
+        //   window.location.reload(true);
+    }
+
     const ProfileRightbar = () => {
         return (
             <>
@@ -113,6 +135,22 @@ export default function Rightbar({ user }) {
                             </div>
                         </Link>
                     ))}
+                </div>
+                <div className="rightbarInfo"> 
+                <h4 className="rightbarTitle">Language</h4>
+                <div className="rightbarInfoItem">
+                        <span className="rightbarInfoKey">Current Language </span>
+                        <span className="rightbarInfoValue">{user.lang}</span>
+                </div>
+                <div className="rightbarInfoItem">
+                        <span className="rightbarInfoKey">Change Language</span>
+                        <span className="rightbarInfoValue">
+                            <select name="language" id="language" onChange={ () => changeLang(document.getElementById("language").value)}>
+                                <option value="0" >Hindi</option>
+                                <option value="1" >English</option>
+                            </select>
+                        </span>
+                </div>                      
                 </div>
             </>
         )
