@@ -123,4 +123,20 @@ router.put("/:id/unfollow", async (req, res) => {
     }
 })
 
+// Change Language :: 
+router.patch("/changeLang", async (req , res) => {
+    console.log("Body ::: ", req.body)
+    if (req.body._id !== "") {
+        try{
+            const user = await User.findByIdAndUpdate(req.body._id, {
+                $set: req.body,
+            });
+            res.status(200).json("Account has been updated");
+        } catch(err){
+            console.log("error : " , err)
+            return res.status(403).json("UserId not valid");
+        }
+    }
+})
+
 module.exports = router;

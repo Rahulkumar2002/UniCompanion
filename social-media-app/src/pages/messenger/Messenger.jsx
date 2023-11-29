@@ -13,10 +13,13 @@ export default function Messenger() {
     const [currentChat, setCurrentChat] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
-    const [arrivalMessage, setArrivalMessage] = useState(null);
+    const [arrivalMessage, setArrivalMessage] = useState({});
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [reciverPP , setReceiverPP] = useState("");
+    const [receiverLang , setReceiverLang] = useState(0);
     const socket = useRef();
     const { user } = useContext(AuthContext);
+    const [senderLang , setSenderLang] = useState(user.lang);
     const scrollRef = useRef();
 
     console.log("Message user :: ", user)
@@ -24,6 +27,7 @@ export default function Messenger() {
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
         socket.current.on("getMessage", data => {
+            console.log("ArrivalMessageData : " ,data )
             setArrivalMessage({
                 sender: data.senderId,
                 text: data.text,
@@ -33,8 +37,11 @@ export default function Messenger() {
     }, [])
 
     useEffect(() => {
+        console.log("ArrivalMessage :::::: " , arrivalMessage)
         arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
             setMessages((prev) => [...prev, arrivalMessage]);
+         
+        console.log("SetMessageArrivalMessage :: ::: " , messages)    
     }, [arrivalMessage, currentChat])
 
     useEffect(() => {
@@ -70,7 +77,12 @@ export default function Messenger() {
         getConversations()
     }, [user])
 
-    useEffect(() => {
+    useEffect(async () => {
+        if (currentChat !== null) {
+            const receiverId = currentChat.members.find(member => member !== user._id);
+            const receiver = await getUser(receiverId) ; 
+            setReceiverPP(receiver.profilePicture);
+        }
         const getMessages = async () => {
             try {
                 const res = await axios.get("/messages/" + currentChat?._id);
@@ -82,20 +94,75 @@ export default function Messenger() {
         getMessages();
     }, [currentChat])
 
+    const getUser = async (id) => {
+        try {
+          const response = await axios("/users?userId=" + id);
+          console.log("Users from messenger :: ", response.data);
+          return response.data;
+        } catch (error) {
+          console.log("Error in getting user :: ", error);
+          throw error; // Rethrow the error for handling higher up, if needed
+        }
+      };
+
+    const getTranslationHindi = async (newMessage) => {
+          try {
+            const response =  await axios.post('http://localhost:5000/translateHindi', {
+                english_text : newMessage
+              })
+              console.log("Translated Text :: " , response.data.response);
+              let translatedText = response.data.response // 
+              return translatedText ;
+          } catch (error) {
+            console.log("Error in Translating the text :: ", error);
+          }
+    }
+
+    const getTranslationEnglish = async (newMessage) => {
+        try {
+          const response =  await axios.post('http://localhost:5000/translateEnglish', {
+              hindi_text : newMessage
+            })
+            console.log("Translated Text :: " , response.data.response);
+            let translatedText = response.data.response // 
+            return translatedText ;
+        } catch (error) {
+          console.log("Error in Translating the text :: ", error);
+        }
+  }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const receiverId = currentChat.members.find(member => member !== user._id);
+       
+        const sender = await getUser(user._id);
+        setSenderLang(sender.lang) ; 
+        console.log("sender :: " ,  sender , " sendlang : " , senderLang);
+        let textArray = [2] ; 
+        if (sender.lang === 1) {
+            textArray[1] = newMessage ; 
+            textArray[0] = await getTranslationHindi(newMessage);
+        } else {
+            textArray[0] = newMessage ; 
+            textArray[1] = await getTranslationEnglish(newMessage);
+        }
+        
+        console.log("TextArray : " , textArray)
+
         const message = {
             sender: user._id,
-            text: newMessage,
+            text: textArray, //
             conversationId: currentChat._id,
         };
-        const receiverId = currentChat.members.find(member => member !== user._id);
 
+        const receiver = await getUser(receiverId) ; 
+        setReceiverLang(receiver.lang) ; 
+        setReceiverPP(receiver.profilePicture);
+        console.log("textArray[receiverLang] : " , textArray[receiverLang])
         socket.current.emit("sendMessage", {
-            senderId: user._id,
-            receiverId,
-            text: newMessage
+                senderId: user._id,
+                receiverId : receiverId,
+                text: textArray[receiverLang] 
         });
 
         try {
@@ -132,7 +199,7 @@ export default function Messenger() {
 
                                     {messages.map((m) => (
                                         <div ref={scrollRef}>
-                                            <Message message={m} own={m.sender === user._id} />
+                                            <Message message={m} own={m.sender === user._id} SenderLang={senderLang} ReceiverPP={reciverPP} />
                                         </div>
                                     ))}
                                 </div>

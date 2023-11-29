@@ -55,6 +55,10 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         enum: [1, 2, 3]
     },
+    lang: {
+        type: Number , 
+        enum : [0 , 1]  
+    }
 },
     { timestamps: true }
 )
