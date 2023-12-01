@@ -7,3 +7,6 @@ social-media-app/.env
 
 
 socket/node_modules
+
+model_flask_app/.venv
+model_flask_app/__pycache__
