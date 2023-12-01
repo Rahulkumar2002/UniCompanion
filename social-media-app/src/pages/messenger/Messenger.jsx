@@ -37,11 +37,11 @@ export default function Messenger() {
     }, [])
 
     useEffect(() => {
-        console.log("ArrivalMessage :::::: " , arrivalMessage)
+        // console.log("ArrivalMessage :::::: " , arrivalMessage)
         arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
             setMessages((prev) => [...prev, arrivalMessage]);
          
-        console.log("SetMessageArrivalMessage :: ::: " , messages)    
+        // console.log("SetMessageArrivalMessage :: ::: " , messages)    
     }, [arrivalMessage, currentChat])
 
     useEffect(() => {
