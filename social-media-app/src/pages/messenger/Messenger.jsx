@@ -107,7 +107,7 @@ export default function Messenger() {
 
     const getTranslationHindi = async (newMessage) => {
           try {
-            const response =  await axios.post('http://localhost:5000/translateHindi', {
+            const response =  await axios.post(`${process.env.REACT_APP_FLASK} + translateHindi`, {
                 english_text : newMessage
               })
               console.log("Translated Text :: " , response.data.response);
@@ -120,7 +120,7 @@ export default function Messenger() {
 
     const getTranslationEnglish = async (newMessage) => {
         try {
-          const response =  await axios.post('http://localhost:5000/translateEnglish', {
+          const response =  await axios.post(`${process.env.REACT_APP_FLASK} + translateEnglish`, {
               hindi_text : newMessage
             })
             console.log("Translated Text :: " , response.data.response);
