@@ -12,7 +12,7 @@ export default function Message({ message, own , SenderLang , ReceiverPP}) {
         } else {
             setNewTextMessage(typeof message.text === "object" ? message.text[SenderLang] : message.text )
         }
-    }, [message])
+    }, [message , own , SenderLang])
     console.log("NewTextMessage ::: ", newTextMessage)
     return (
         <div className={own ? "message own" : "message"}>
